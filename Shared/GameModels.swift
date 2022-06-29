@@ -199,8 +199,8 @@ extension GameState {
         players[playerColor]!.pieces[pieceIdx].position = move.toPosition
 
         // Check for jumped piece.
-        let rowJump = move.fromPosition.row - move.toPosition.row
-        let colJump = move.fromPosition.col - move.toPosition.col
+        let rowJump = move.toPosition.row - move.fromPosition.row
+        let colJump = move.toPosition.col - move.fromPosition.col
         if abs(rowJump) == 2 && abs(colJump) == 2 {
             let jumpedPosition = Position(
                 row: move.fromPosition.row + rowJump / 2,
@@ -227,7 +227,6 @@ extension GameEnvironment {
             }
 
             let piece = gameState.players[gameState.currentPlayer]!.pieces.randomElement()!
-//            let pieceIdx = Int.random(in: gameState.players[gameState.currentPlayer]!.pieces.indices)
             return .init(fromPosition: piece.position, toPosition: .init(row: 0, col: 0))
         }
 
