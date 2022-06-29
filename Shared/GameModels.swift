@@ -60,6 +60,7 @@ struct GameState {
 extension GameState {
     var blackPlayer: Player { players[.black]! }
     var redPlayer: Player { players[.red]! }
+    var allPieces: [Piece] { blackPlayer.pieces + redPlayer.pieces }
 }
 
 struct GameViewState {
@@ -117,11 +118,7 @@ final class GameRunner: ObservableObject {
     func play() {
         Task {
             while gameState.winner == nil {
-                let move: PlayerMove
-                switch gameState.currentPlayer {
-                case .black: move = await environment.blackMove(gameState, self)
-                case .red: move = await environment.redMove(gameState, self)
-                }
+                let move = await nextMove()
 
                 gameState.apply(move: move, playerColor: gameState.currentPlayer)
 
@@ -136,21 +133,20 @@ final class GameRunner: ObservableObject {
         }
     }
 
-    func didTap(position: Position) {
-        tappedPositionPublisher.send(position)
+    func nextMove() async -> PlayerMove {
+        switch gameState.currentPlayer {
+        case .black: return await environment.blackMove(gameState, self)
+        case .red: return await environment.redMove(gameState, self)
+        }
     }
+
+    func didTap(position: Position) { tappedPositionPublisher.send(position) }
 
     var cancellables = Set<AnyCancellable>()
     func nextTappedPosition() async -> Position {
-        print("!!! awaiting next tapped…")
         return await withCheckedContinuation { continuation in
-            // FIXME??
             self.tappedPositionPublisher
                 .first()
-                .handleEvents(
-                    receiveOutput: { print("!!! tappedPositionPublisher emitted", $0) },
-                    receiveCompletion: { _ in print("!!! tappedPositionPublisher completed") }
-                )
                 .sink(receiveValue: continuation.resume(returning:))
                 .store(in: &self.cancellables)
         }
@@ -238,29 +234,43 @@ extension GameEnvironment {
 }
 
 extension GameEnvironment {
-    static func env() -> GameEnvironment {
-        let human: (GameState, GameRunner) async -> PlayerMove = { _, runner in
-            .init(
-                fromPosition: await runner.nextTappedPosition(),
-                toPosition: await runner.nextTappedPosition()
+    static var humanVsHuman: GameEnvironment {
+        let human: (GameState, GameRunner) async -> PlayerMove = { gameState, runner in
+            // TODO: nextTappedPosition should be async sequence???
+            // Wait for user(s) to tap an piece of the correct player.
+            let fromPosition = await nextValue(
+                { await runner.nextTappedPosition() },
+                passing: { tappedPosition in
+                    return gameState.players[gameState.currentPlayer]?.pieces
+                        .contains(where: { $0.position == tappedPosition })
+                        ?? false
+                }
             )
-        }
-
-        let ai: (GameState, GameRunner) async -> PlayerMove = { gameState, _ in
-            do {
-                try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
-            } catch {
-                print("!!! failed to sleep, because \(error)")
-            }
-
-            let piece = gameState.players[gameState.currentPlayer]!.pieces.randomElement()!
-//            let pieceIdx = Int.random(in: gameState.players[gameState.currentPlayer]!.pieces.indices)
-            return .init(fromPosition: piece.position, toPosition: .init(row: 0, col: 0))
+            let toPosition = await nextValue(
+                { await runner.nextTappedPosition() },
+                passing: { tappedPosition in
+                    // No one has a piece there.
+                    return !gameState.allPieces
+                        .contains(where: { $0.position == tappedPosition })
+                    // TODO: Can only move one space UNLESS jumping opposing player's piece.
+                }
+            )
+            return .init(
+                fromPosition: fromPosition,
+                toPosition: toPosition
+            )
         }
 
         return .init(
             redMove: human,
             blackMove: human
         )
+    }
+}
+
+func nextValue<T>(_ fetch: () async -> T, passing predicate: (T) -> Bool) async -> T {
+    while true {
+        let value = await fetch()
+        if predicate(value) { return value }
     }
 }

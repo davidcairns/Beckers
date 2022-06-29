@@ -11,18 +11,8 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var gameRunner = GameRunner(
         gameState: GameState(),
-        environment: .env()
+        environment: .humanVsHuman
     )
-
-//    private let tappedPositionPublisher = PassthroughSubject<Position, Never>()
-//
-//    func nextTappedPosition() async -> Position {
-//        return await withUnsafeContinuation { continuation in
-//            // FIXME??
-//            _ = self.tappedPositionPublisher
-//                .sink(receiveValue: continuation.resume(returning:))
-//        }
-//    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -40,8 +30,6 @@ struct ContentView: View {
                                 .gesture(
                                     TapGesture()
                                         .onEnded { _ in
-                                            print("!!! tapped", rowIdx, colIdx)
-//                                            tappedPositionPublisher.send(.init(row: rowIdx, col: colIdx))
                                             gameRunner.didTap(position: .init(row: rowIdx, col: colIdx))
                                         }
                                 )
