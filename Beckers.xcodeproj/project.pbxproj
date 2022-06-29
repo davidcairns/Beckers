@@ -17,6 +17,8 @@
 		DF4629D82851051C00E47343 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4629AE2851051700E47343 /* ContentView.swift */; };
 		DF4629D92851051C00E47343 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF4629AF2851051B00E47343 /* Assets.xcassets */; };
 		DF4629DA2851051C00E47343 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DF4629AF2851051B00E47343 /* Assets.xcassets */; };
+		DF4629EA285932D900E47343 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4629E9285932D900E47343 /* GameModels.swift */; };
+		DF4629EB285932D900E47343 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4629E9285932D900E47343 /* GameModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,7 @@
 		DF4629CD2851051C00E47343 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4629D12851051C00E47343 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		DF4629D32851051C00E47343 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		DF4629E9285932D900E47343 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,7 @@
 			children = (
 				DF4629AD2851051700E47343 /* BeckersApp.swift */,
 				DF4629AE2851051700E47343 /* ContentView.swift */,
+				DF4629E9285932D900E47343 /* GameModels.swift */,
 				DF4629AF2851051B00E47343 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -300,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4629D72851051C00E47343 /* ContentView.swift in Sources */,
+				DF4629EA285932D900E47343 /* GameModels.swift in Sources */,
 				DF4629D52851051C00E47343 /* BeckersApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4629D82851051C00E47343 /* ContentView.swift in Sources */,
+				DF4629EB285932D900E47343 /* GameModels.swift in Sources */,
 				DF4629D62851051C00E47343 /* BeckersApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
